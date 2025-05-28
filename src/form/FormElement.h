@@ -10,7 +10,7 @@ public:
   virtual ~FormElement() = default; // Asigură ștergerea corectă a obiectelor derivate
   
   // Desenează elementul pe ecran la poziția (x,y)
-  virtual void draw(DisplayInterface &display, int x, int y) = 0;
+  virtual void draw(DisplayInterface &display, int x, int y,int elementWidth) = 0;
   
   // Gestionează evenimentele de intrare
   // Returnează true dacă evenimentul a fost procesat

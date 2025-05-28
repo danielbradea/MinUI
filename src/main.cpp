@@ -28,13 +28,16 @@ void setup()
   btnManager.begin();
   oled.begin();
 
-  //oled.setRotation(1);
+  oled.setRotation(1);
 
   auto username = std::make_shared<TextInputElement>("Username", "BID");
   auto password = std::make_shared<TextInputElement>("Password");
+  auto email = std::make_shared<TextInputElement>("Email");
 
   formW.addElement(username);
   formW.addElement(password);
+  formW.addElement(email);
+
 }
 
 void loop()
