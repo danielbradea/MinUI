@@ -29,41 +29,30 @@ void FormView::handleInput(ButtonEvent buttonEvent)
     if (elements.empty())
         return;
 
-    if (currentElement && elements[currentElement]->getEditing())
+    // Dacă un element este în mod editare, trimitem toate evenimentele către el
+    if (elements[currentElement]->getEditing())
     {
-        elements[currentElement]->handleInput(buttonEvent);
-        return;
+        bool eventHandled = elements[currentElement]->handleInput(buttonEvent);
+        if (eventHandled) return; // Evenimentul a fost consumat
     }
 
-    if (buttonEvent.buttonName == "UP")
+    // Navigare între elemente doar dacă niciun element nu este în mod editare
+    if (buttonEvent.action == ButtonAction::SHORT_CLICK)
     {
-        if (buttonEvent.action == ButtonAction::SHORT_CLICK && currentElement > 0)
+        if (buttonEvent.buttonName == "UP" && currentElement > 0)
         {
             currentElement--;
         }
-    }
-    else if (buttonEvent.buttonName == "DOWN")
-    {
-        if (buttonEvent.action == ButtonAction::SHORT_CLICK && currentElement < elements.size() - 1)
+        else if (buttonEvent.buttonName == "DOWN" && currentElement < elements.size() - 1)
         {
             currentElement++;
         }
-        
-    }
-    else if (buttonEvent.buttonName == "CENTER")
-    {
-         if (buttonEvent.action == ButtonAction::SHORT_CLICK)
+        else if (buttonEvent.buttonName == "CENTER")
         {
             if (elements[currentElement]->canEdit())
             {
                 elements[currentElement]->setEditing(true);
             }
         }
-    }
-    else if (buttonEvent.buttonName == "LEFT")
-    {
-    }
-    else if (buttonEvent.buttonName == "RIGHT")
-    {
     }
 }
