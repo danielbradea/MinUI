@@ -170,7 +170,7 @@ public:
     }
 
     // Returns the height of the element
-    int getHeight() override { return LABEL_HEIGHT + BOX_HEIGHT + 5; }
+    int getHeight() override { return LABEL_HEIGHT + BOX_HEIGHT + 2 ; }
 
     // Indicates if this element supports editing
     bool canEdit() override { return true; }

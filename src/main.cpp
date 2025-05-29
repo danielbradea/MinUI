@@ -2,6 +2,9 @@
 #include "button/ButtonManager.h"
 #include "form/FormView.h"
 #include "form/TextInputElement.h"
+#include "form/CheckBoxElement.h"
+#include "form/ListElement.h"
+#include "form/ButtonElement.h"
 #include <memory>
 #include <Wire.h>
 #include <map>
@@ -18,6 +21,9 @@ ButtonManager btnManager(buttonConfig);
 
 DisplaySH1106G oled(128, 64, -1);
 FormView formW(oled);
+void saveAction(String label) {
+    Serial.println("Pressed: " + label);
+}
 
 void setup()
 {
@@ -28,15 +34,19 @@ void setup()
   btnManager.begin();
   oled.begin();
 
-  oled.setRotation(1);
+  //oled.setRotation(1);
 
-  auto username = std::make_shared<TextInputElement>("Username", "BID");
-  auto password = std::make_shared<TextInputElement>("Password");
-  auto email = std::make_shared<TextInputElement>("Email");
+  auto username = std::make_shared<TextInputElement>("Username");
+  auto password = std::make_shared<CheckBoxElement>("Asddasd sdf");
+  std::vector<String> colors = {"Red", "Green", "Blue", "Yellow Green"};
+  auto colorEl = std::make_shared<ListElement>("Color",colors);
+
+  auto buttonSave = std::make_shared<ButtonElement>("Save",saveAction);
 
   formW.addElement(username);
   formW.addElement(password);
-  formW.addElement(email);
+  formW.addElement(colorEl);
+  formW.addElement(buttonSave);
 
 }
 

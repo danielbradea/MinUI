@@ -27,30 +27,34 @@ void FormView::draw() {
 
     const int spacing = 5;
     const int visibleHeight = getVisibleHeight();
-    int yPos = offsetY;
 
-    // Calculate the total height used from the current element upward
-    int usedHeight = 0;
+    // Începem de la elementul curent și încercăm să ne întoarcem cât putem în sus
     size_t startIndex = currentElement;
+    int totalHeight = elements[currentElement]->getHeight();
 
-    // Try to include as many elements above the current one as possible to fit in view
+    // Extindem în sus cât ne permite spațiul
     while (startIndex > 0) {
-        int elemHeight = elements[startIndex - 1]->getHeight() + spacing;
-        if (usedHeight + elemHeight > visibleHeight) break;
-        usedHeight += elemHeight;
+        int h = elements[startIndex - 1]->getHeight() + spacing;
+        if (totalHeight + h > visibleHeight) break;
+        totalHeight += h;
         startIndex--;
     }
 
-    // Draw elements starting from the calculated index downward
+    // Acum desenăm în jos cât încape
+    int yPos = offsetY;
     for (size_t i = startIndex; i < elements.size(); ++i) {
         int elemHeight = elements[i]->getHeight();
         if (yPos + elemHeight > offsetY + visibleHeight) break;
 
-        elements[i]->setSelected(i == currentElement); // Highlight current element
-        elements[i]->draw(display, offsetX, yPos, getVisibleWidth()); // Draw element
+        elements[i]->setSelected(i == currentElement);
+        elements[i]->draw(display, offsetX, yPos, getVisibleWidth());
+
         yPos += elemHeight + spacing;
     }
 }
+
+
+
 
 // Handles input events like UP, DOWN, and CENTER button presses
 void FormView::handleInput(ButtonEvent buttonEvent) {
@@ -72,6 +76,9 @@ void FormView::handleInput(ButtonEvent buttonEvent) {
             // Start editing if the selected element is editable
             if (elements[currentElement]->canEdit()) {
                 elements[currentElement]->setEditing(true);
+            }else{
+                bool handled = elements[currentElement]->handleInput(buttonEvent);
+                if (handled) return;
             }
         }
     }
