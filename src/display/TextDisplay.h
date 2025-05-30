@@ -1,4 +1,5 @@
-#pragma once
+#ifndef TEXT_DISPLAY_H
+#define TEXT_DISPLAY_H
 #include <Arduino.h>
 #include "DisplayInterface.h"
 #include <algorithm>
@@ -61,13 +62,34 @@ public:
     {
         if (currentLines < maxLines)
         {
-            lines[currentLines].text = text;
-            currentLines++;
+            lines[currentLines++].text = text;
+        }
+        else
+        {
+            // Shift toate liniile cu una în sus
+            for (uint16_t i = 1; i < maxLines; ++i)
+            {
+                lines[i - 1] = lines[i];
+            }
+            lines[maxLines - 1].text = text;
+        }
+
+        // Mută selecția la ultima linie
+        selectedIndex = currentLines > 0 ? currentLines - 1 : 0;
+
+        // Scroll automat dacă e plin ecranul
+        if (currentLines > visibleLines)
+        {
+            firstVisibleIndex = currentLines - visibleLines;
         }
     }
 
     void clear()
     {
+        for (uint16_t i = 0; i < currentLines; ++i)
+        {
+            lines[i].text = "";
+        }
         currentLines = 0;
         selectedIndex = 0;
         firstVisibleIndex = 0;
@@ -130,7 +152,7 @@ public:
             String displayText = getDisplayText(lines[lineIdx].text);
 
             display.setCursor(0, i * lineSpacing);
-            display.print((lineIdx == selectedIndex) ? ">" : " ");
+            display.print((lineIdx == selectedIndex) ? "~" : " ");
             display.print(displayText.c_str());
         }
 
@@ -199,3 +221,4 @@ private:
         }
     }
 };
+#endif
