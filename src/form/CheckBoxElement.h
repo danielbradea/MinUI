@@ -10,12 +10,13 @@
 // Toggling is done via button events (center button or up/down)
 // When selected, the label scrolls left-right if it doesn't fit
 //
-class CheckBoxElement : public FormElement {
+class CheckBoxElement : public FormElement
+{
 private:
-    String label;               // The label displayed next to the checkbox
-    bool isChecked;             // Whether the checkbox is checked
-    bool isEditing = false;     // Whether the element is currently being edited
-    bool isSelected = false;    // Whether the element is currently selected
+    String label;            // The label displayed next to the checkbox
+    bool isChecked;          // Whether the checkbox is checked
+    bool isEditing = false;  // Whether the element is currently being edited
+    bool isSelected = false; // Whether the element is currently selected
 
     // UI layout constants
     const int BOX_SIZE = 10;
@@ -28,7 +29,7 @@ private:
 
     unsigned long lastScrollTime = 0;
     int scrollOffset = 0;
-    int scrollDirection = 1;     // 1 for right, -1 for left
+    int scrollDirection = 1; // 1 for right, -1 for left
 
 public:
     // Constructor with label and optional default state
@@ -36,8 +37,10 @@ public:
         : label(label), isChecked(defaultState) {}
 
     // Draws the checkbox element on the screen
-    void draw(DisplayInterface &display, int x, int y, int elementWidth) override {
-        if (isSelected) {
+    void draw(DisplayInterface &display, int x, int y, int elementWidth) override
+    {
+        if (isSelected)
+        {
             display.drawFastVLine(x, y, getHeight(), 1);
         }
 
@@ -45,7 +48,8 @@ public:
         int boxY = y + (ELEMENT_HEIGHT - BOX_SIZE) / 2;
         display.drawRect(boxX, boxY, BOX_SIZE, BOX_SIZE, 1);
 
-        if (isChecked) {
+        if (isChecked)
+        {
             display.drawLine(boxX + 1, boxY + BOX_SIZE / 2,
                              boxX + BOX_SIZE / 2, boxY + BOX_SIZE - 2, 1);
             display.drawLine(boxX + BOX_SIZE / 2, boxY + BOX_SIZE - 2,
@@ -63,14 +67,19 @@ public:
 
         String visibleText = label;
 
-        if (isSelected && label.length() > maxVisibleChars) {
+        if (isSelected && label.length() > maxVisibleChars)
+        {
             unsigned long now = millis();
-            if (now - lastScrollTime > 200) {
+            if (now - lastScrollTime > 200)
+            {
                 scrollOffset += scrollDirection;
-                if (scrollOffset < 0) {
+                if (scrollOffset < 0)
+                {
                     scrollOffset = 0;
                     scrollDirection = 1;
-                } else if (scrollOffset > label.length() - maxVisibleChars) {
+                }
+                else if (scrollOffset > label.length() - maxVisibleChars)
+                {
                     scrollOffset = label.length() - maxVisibleChars;
                     scrollDirection = -1;
                 }
@@ -78,38 +87,55 @@ public:
             }
 
             visibleText = label.substring(scrollOffset, scrollOffset + maxVisibleChars);
-        } else {
+        }
+        else
+        {
             scrollOffset = 0;
             scrollDirection = 1;
-            if (label.length() > maxVisibleChars) {
+            if (label.length() > maxVisibleChars)
+            {
                 visibleText = label.substring(0, maxVisibleChars);
             }
         }
 
         display.print(visibleText.c_str());
 
-        if (isEditing && (millis() % 1000 < 500)) {
+        if (isEditing && (millis() % 1000 < 500))
+        {
             int cursorY = boxY + BOX_SIZE + CURSOR_OFFSET;
             display.drawFastHLine(boxX, cursorY, BOX_SIZE, 1);
         }
     }
 
     // Handles user input based on button events
-    bool handleInput(ButtonEvent buttonEvent) override {
-        if (!isEditing) return false;
+    bool handleInput(ButtonEvent buttonEvent) override
+    {
+        if (!isEditing)
+            return false;
 
-        if (buttonEvent.action == ButtonAction::SHORT_CLICK) {
-            if (buttonEvent.buttonName == "CENTER" || 
-                buttonEvent.buttonName == "UP" || 
-                buttonEvent.buttonName == "DOWN") {
+        if (buttonEvent.action == ButtonAction::SHORT_CLICK)
+        {
+            if (buttonEvent.buttonName == "UP")
+            {
+                isChecked = true;
+                return true;
+            }
+            else if (buttonEvent.buttonName == "DOWN")
+            {
+                isChecked = false;
+                return true;
+            }
+            else if (buttonEvent.buttonName == "CENTER")
+            {
                 isChecked = !isChecked;
                 return true;
             }
-        }else if (buttonEvent.action == ButtonAction::DOUBLE_CLICK) {
-            if (buttonEvent.buttonName == "CENTER") {
-                setEditing(false);
-                return true;
-            }
+        }
+        else if (buttonEvent.action == ButtonAction::DOUBLE_CLICK &&
+                 buttonEvent.buttonName == "CENTER")
+        {
+            setEditing(false);
+            return true;
         }
 
         return false;
@@ -125,7 +151,8 @@ public:
     bool getEditing() override { return isEditing; }
 
     // Sets editing mode
-    void setEditing(bool editing) override {
+    void setEditing(bool editing) override
+    {
         isEditing = editing;
     }
 

@@ -2,6 +2,7 @@
 #define TEXT_DISPLAY_H
 #include <Arduino.h>
 #include "DisplayInterface.h"
+#include "../button/ButtonManager.h"
 #include <algorithm>
 
 class TextDisplay
@@ -152,11 +153,27 @@ public:
             String displayText = getDisplayText(lines[lineIdx].text);
 
             display.setCursor(0, i * lineSpacing);
-            display.print((lineIdx == selectedIndex) ? "~" : " ");
+            display.print((lineIdx == selectedIndex) ? ">" : " ");
             display.print(displayText.c_str());
         }
 
         drawScrollIndicator();
+    }
+
+    void handleInput(ButtonEvent buttonEvent)
+    {
+        if (buttonEvent.buttonName == "UP" && buttonEvent.action == ButtonAction::SHORT_CLICK)
+            scrollUp();
+        else if (buttonEvent.buttonName == "DOWN" && buttonEvent.action == ButtonAction::SHORT_CLICK)
+            scrollDown();
+        else if (buttonEvent.buttonName == "RIGHT" && buttonEvent.action == ButtonAction::SHORT_CLICK)
+            scrollRight();
+        else if (buttonEvent.buttonName == "LEFT" && buttonEvent.action == ButtonAction::SHORT_CLICK)
+            scrollLeft();
+        else if (buttonEvent.buttonName == "RIGHT" && buttonEvent.action == ButtonAction::DOUBLE_CLICK)
+            scrollRight(5);
+        else if (buttonEvent.buttonName == "LEFT" && buttonEvent.action == ButtonAction::DOUBLE_CLICK)
+            scrollLeft(5);
     }
 
 private:
@@ -220,5 +237,7 @@ private:
             }
         }
     }
+
+    
 };
 #endif

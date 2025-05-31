@@ -114,11 +114,6 @@ public:
                 updateCharSetByCursor();
                 return true;
             }
-            else if (buttonEvent.buttonName == "CENTER")
-            {
-                setEditing(false);
-                return true;
-            }
             else if (buttonEvent.buttonName == "UP")
             {
                 cycleCharAtCursor();
@@ -129,9 +124,15 @@ public:
                 cycleCharAtCursorReverse();
                 return true;
             }
+        }else if (buttonEvent.action == ButtonAction::DOUBLE_CLICK){
+            if (buttonEvent.buttonName == "CENTER")
+            {
+                setEditing(false);
+                return true;
+            }
         }
-        // Handle double-click events for editing operations
-        else if (buttonEvent.action == ButtonAction::DOUBLE_CLICK)
+        // Handle long-click events for editing operations
+        else if (buttonEvent.action == ButtonAction::LONG_PRESS)
         {
             if (buttonEvent.buttonName == "UP")
             {
@@ -157,11 +158,6 @@ public:
             {
                 value = value.substring(0, cursorPos) + ' ' + value.substring(cursorPos);
                 cursorPos++;
-                return true;
-            }
-            else if (buttonEvent.buttonName == "CENTER")
-            {
-                setEditing(false);
                 return true;
             }
         }

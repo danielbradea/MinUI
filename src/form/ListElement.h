@@ -175,11 +175,6 @@ public:
                     return true;
                 }
             }
-            else if (buttonEvent.buttonName == "CENTER")
-            {
-                setEditing(false);
-                return true;
-            }
         }
         else if (buttonEvent.action == ButtonAction::DOUBLE_CLICK)
         {
